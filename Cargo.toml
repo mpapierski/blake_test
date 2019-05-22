@@ -1,0 +1,10 @@
+[package]
+name = "blake_test"
+version = "0.1.0"
+authors = ["Michał Papierski <michal@papierski.net>"]
+edition = "2018"
+
+[dependencies]
+blake2 = "0.8"
+casperlabs-contract-ffi = { version = "0.5.0", default-features = false, features = ["std"] }
+failure = "0.1.5"
