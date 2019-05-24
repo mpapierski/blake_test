@@ -21,7 +21,11 @@ impl From<BytesReprError> for CommonError {
     }
 }
 
-fn new_function_address(pubkey: [u8; 32], nonce: u64, fn_store_id: u32) -> Result<(), CommonError> {
+fn new_function_address(
+    pubkey: [u8; 32],
+    nonce: u64,
+    fn_store_id: u32,
+) -> Result<[u8; 32], CommonError> {
     let mut pre_hash_bytes = Vec::with_capacity(44); //32 byte pk + 8 byte nonce + 4 byte ID
     pre_hash_bytes.extend_from_slice(&pubkey);
     pre_hash_bytes.append(&mut nonce.to_bytes()?);
@@ -31,11 +35,15 @@ fn new_function_address(pubkey: [u8; 32], nonce: u64, fn_store_id: u32) -> Resul
     hasher.input(&pre_hash_bytes);
     let mut hash_bytes = [0; 32];
     hasher.variable_result(|hash| hash_bytes.clone_from_slice(hash));
-    println!("hash bytes {:?}", hash_bytes);
-    Ok(())
+    Ok(hash_bytes)
 }
 
 fn main() -> Result<(), Error> {
-    new_function_address([48; 32], 3, 0)?;
+    for nonce in 0..10 {
+        for counter in 0..3 {
+            let hash = new_function_address([48; 32], nonce, counter)?;
+            println!("nonce={} counter={} hash={:?}", nonce, counter, hash);
+        }
+    }
     Ok(())
 }
